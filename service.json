@@ -1,0 +1,16 @@
+[
+    {
+      "name": "satyaFragateContainer",
+      "image": "mcr.microsoft.com/windows/servercore/iis",
+      "cpu": 10,
+      "memory": 512,
+      "networkMode" : "awsvpc",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80
+        }
+      ]
+    }
+  ]
