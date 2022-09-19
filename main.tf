@@ -11,7 +11,7 @@ variable "availability_zones" {
   default = ["ap-south-1a", "ap-south-1b"]
 }
 data "aws_iam_role" "iam" {
-  name = "AWSServiceRoleForECS"
+  name = "ecsTaskExecutionROle"
 }
 
 #code
@@ -154,6 +154,10 @@ resource "aws_lb" "alb" {
     Environment = "SatyaAlbFargate"
   }
 }
+# resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
+#   role       = "aws_iam_role.iam.name"
+#   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+# }
 
 output "ip" {
   value = aws_lb.alb.dns_name
@@ -245,6 +249,7 @@ requires_compatibilities = ["FARGATE"]
 network_mode = "awsvpc"
 cpu = 1024
 memory  = 2048
+execution_role_arn = data.aws_iam_role.iam.arn
  container_definitions = file("./service.json")
  runtime_platform {
  operating_system_family = "WINDOWS_SERVER_2019_CORE"
@@ -322,26 +327,20 @@ resource "aws_security_group" "sg2" {
   }
 }
 
-# resource "aws_ecs_task_set" "example" {
-#   service         = aws_ecs_service.ecs.id
-#   cluster         = aws_ecs_cluster.cluster.id
-#   task_definition = aws_ecs_task_definition.task_definition.id
+resource "aws_route53_zone" "Route53" {
+  name = "satya1062.tk"
+}
 
-#   load_balancer {
-#     target_group_arn = aws_lb_target_group.target_group.arn
-#     container_name   = "satyaFragateContainer"
-#     container_port   = 8080
-#   }
-# }
 
-# resource "aws_route53_record" "www" {
-#   zone_id = aws_route53_zone.primary.zone_id
-#   name    = "example.com"
-#   type    = "A"
 
-#   alias {
-#     name                   = aws_lb.alb.dns_name
-#     zone_id                = aws_lb.main.zone_id
-#     evaluate_target_health = true
-#   }
-# }
+resource "aws_route53_record" "satya" {
+  zone_id = aws_route53_zone.Route53.zone_id
+  name    = "satya1062.tk"
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.alb.dns_name
+    zone_id                = aws_lb.alb.zone_id
+    evaluate_target_health = true
+  }
+}
