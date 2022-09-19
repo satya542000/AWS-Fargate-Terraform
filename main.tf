@@ -8,7 +8,7 @@ variable "subnet_cidrs_pri" {
   type = list
 }
 variable "availability_zones" {
-  default = ["eu-west-2a", "eu-west-2b"]
+  default = ["ap-south-1a", "ap-south-1b"]
 }
 data "aws_iam_role" "iam" {
   name = "AWSServiceRoleForECS"
@@ -154,6 +154,7 @@ resource "aws_lb" "alb" {
     Environment = "SatyaAlbFargate"
   }
 }
+
 output "ip" {
   value = aws_lb.alb.dns_name
 }
@@ -245,22 +246,6 @@ network_mode = "awsvpc"
 cpu = 1024
 memory  = 2048
  container_definitions = file("./service.json")
-#jsonencode([
-#     {
-#       name      = "satyaFragateContainer"
-#       image     = "mcr.microsoft.com/windows/servercore/iis"
-#       cpu       = 1024
-#       memory    = 2048
-#       essential = true
-#       portMappings = [
-#         {
-#           containerPort = 8080
-#           hostPort      = 8080
-#         }
-#       ]
-#     }
-# ])
-
  runtime_platform {
  operating_system_family = "WINDOWS_SERVER_2019_CORE"
  cpu_architecture = "X86_64"
@@ -349,3 +334,14 @@ resource "aws_security_group" "sg2" {
 #   }
 # }
 
+# resource "aws_route53_record" "www" {
+#   zone_id = aws_route53_zone.primary.zone_id
+#   name    = "example.com"
+#   type    = "A"
+
+#   alias {
+#     name                   = aws_lb.alb.dns_name
+#     zone_id                = aws_lb.main.zone_id
+#     evaluate_target_health = true
+#   }
+# }

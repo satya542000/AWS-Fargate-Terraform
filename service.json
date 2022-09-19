@@ -1,7 +1,7 @@
 [
     {
       "name": "satyaFragateContainer",
-      "image": "mcr.microsoft.com/windows/servercore/iis",
+      "image": "061280019180.dkr.ecr.ap-south-1.amazonaws.com/satyafargateecr:latest",
       "cpu": 10,
       "memory": 512,
       "networkMode" : "awsvpc",
