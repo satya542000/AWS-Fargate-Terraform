@@ -244,7 +244,7 @@ resource "aws_ecs_cluster" "cluster" {
 #   }
 # }
 resource "aws_ecs_task_definition" "task_definition" {
-family  = "service"
+family  = "task"
 requires_compatibilities = ["FARGATE"]
 network_mode = "awsvpc"
 cpu = 1024
